@@ -1,0 +1,4 @@
+Dataset,Records,Features,Duplicate Rows,Class Target,Positive Class Ratio,Missing Values in Source
+Wine Quality—Red,1599,11 numerical,240 (15.0%),quality ≥ 6,53.5%,0 (0.0%)
+Wine Quality—White,4898,11 numerical,937 (19.1%),quality ≥ 6,66.5%,0 (0.0%)
+Adult Census Income (Subsample),10000,"6 numerical, 8 categorical (14 total)",5 (0.05%),income > 50K,23.9%,"Pre-existing in 3 features (workclass, occupation, native-country)"
