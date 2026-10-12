@@ -128,5 +128,82 @@ def apply_mcar_mask(df, feature_cols, mask_rate, seed):
         col_series = df_masked[col].copy()
         col_series[mask[:, j]] = np.nan
         df_masked[col] = col_series
-    r
-# Helper metrics added
+    return df_masked
+
+# -------------------------------------------------------------
+# 3. Model Pipeline
+# -------------------------------------------------------------
+def get_pipeline(model_name, num_cols, cat_cols, seed):
+    transformers = []
+    if num_cols:
+        num_transformer = Pipeline([
+            ('imputer', SimpleImputer(strategy='median')),
+            ('scaler', StandardScaler())
+        ])
+        transformers.append(('num', num_transformer, num_cols))
+    if cat_cols:
+        cat_transformer = Pipeline([
+            ('imputer', SimpleImputer(strategy='most_frequent')),
+            ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+        ])
+        transformers.append(('cat', cat_transformer, cat_cols))
+        
+    preprocessor = ColumnTransformer(transformers=transformers)
+    
+    if model_name == 'Logistic Regression':
+        clf = LogisticRegression(max_iter=2000, random_state=seed)
+    elif model_name == 'Decision Tree':
+        clf = DecisionTreeClassifier(random_state=seed)
+    elif model_name == 'Random Forest':
+        clf = RandomForestClassifier(n_estimators=100, random_state=seed, n_jobs=-1)
+    else:
+        raise ValueError(f"Unknown model: {model_name}")
+        
+    return Pipeline([
+        ('preprocessor', preprocessor),
+        ('classifier', clf)
+    ])
+
+def compute_metrics(y_true, y_pred, y_prob):
+    f1 = f1_score(y_true, y_pred, zero_division=0)
+    prec = precision_score(y_true, y_pred, zero_division=0)
+    rec = recall_score(y_true, y_pred, zero_division=0)
+    acc = accuracy_score(y_true, y_pred)
+    try:
+        auc = roc_auc_score(y_true, y_prob)
+    except:
+        auc = np.nan
+    return f1, prec, rec, acc, auc
+
+# -------------------------------------------------------------
+# 4. Main Experiment Runner
+# -------------------------------------------------------------
+def run_experiments():
+    datasets = load_datasets()
+    models = ['Logistic Regression', 'Decision Tree', 'Random Forest']
+    missing_rates = [0.0, 0.10, 0.20, 0.30]
+    overlap_rates = [0.10, 0.25, 0.50]
+    seeds = list(range(10))
+    
+    results_main = []
+    results_supp = []
+    
+    print("Starting full experimental suite...")
+    start_time = time.time()
+    
+    for d_name, d_info in datasets.items():
+        print(f"\nProcessing Dataset: {d_name} (shape: {d_info['df'].shape})")
+        df_base = d_info['df']
+        feat_cols = d_info['feat_cols']
+        num_cols = d_info['num_cols']
+        cat_cols = d_info['cat_cols']
+        target_col = d_info['target_col']
+        
+        for seed in seeds:
+            # 1. Generate partition indices for this seed
+            tr_idx_ref, te_idx_ref = stratified_group_train_test_split(df_base, feat_cols, target_col, 0.25, seed)
+            tr_idx_rnd, te_idx_rnd = train_test_split(np.arange(len(df_base)), test_size=0.25, random_state=seed, stratify=df_base[target_col])
+            
+            # Select overlap candidate indices from te_idx_ref (stratified)
+       
+# Controlled overlap logic added
