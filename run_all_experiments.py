@@ -205,5 +205,50 @@ def run_experiments():
             tr_idx_rnd, te_idx_rnd = train_test_split(np.arange(len(df_base)), test_size=0.25, random_state=seed, stratify=df_base[target_col])
             
             # Select overlap candidate indices from te_idx_ref (stratified)
-       
-# Controlled overlap logic added
+            rng_ov = np.random.RandomState(seed + 100)
+            shuffled_te_idx = te_idx_ref.copy()
+            rng_ov.shuffle(shuffled_te_idx)
+            
+            for m in missing_rates:
+                # Mask entire dataset once per (seed, m)
+                df_masked = apply_mcar_mask(df_base, feat_cols, m, seed=seed * 100 + int(m * 1000))
+                
+                # Evaluation test set for reference and controlled overlap
+                X_te_ref = df_masked.iloc[te_idx_ref][feat_cols]
+                y_te_ref = df_base.iloc[te_idx_ref][target_col]
+                
+                # Training sets
+                X_tr_ref = df_masked.iloc[tr_idx_ref][feat_cols]
+                y_tr_ref = df_base.iloc[tr_idx_ref][target_col]
+                
+                # Random split sets
+                X_tr_rnd = df_masked.iloc[tr_idx_rnd][feat_cols]
+                y_tr_rnd = df_base.iloc[tr_idx_rnd][target_col]
+                X_te_rnd = df_masked.iloc[te_idx_rnd][feat_cols]
+                y_te_rnd = df_base.iloc[te_idx_rnd][target_col]
+                
+                # Reference model evaluation
+                ref_metrics = {}
+                for m_name in models:
+                    pipe = get_pipeline(m_name, num_cols, cat_cols, seed)
+                    pipe.fit(X_tr_ref, y_tr_ref)
+                    y_pred = pipe.predict(X_te_ref)
+                    y_prob = pipe.predict_proba(X_te_ref)[:, 1] if hasattr(pipe.named_steps['classifier'], 'predict_proba') else y_pred
+                    f1, prec, rec, acc, auc = compute_metrics(y_te_ref, y_pred, y_prob)
+                    
+                    ref_metrics[m_name] = f1
+                    results_main.append({
+                        'dataset': d_name, 'seed': seed, 'missing_rate': m, 'condition': 'Reference (0% Overlap)',
+                        'overlap_rate': 0.0, 'model': m_name, 'f1': f1, 'precision': prec, 'recall': rec,
+                        'accuracy': acc, 'roc_auc': auc, 'ref_f1': f1, 'delta_f1': 0.0, 'eri': 0.0
+                    })
+                    
+                # Controlled Overlap Conditions
+                for ov in overlap_rates:
+                    n_copy = int(round(ov * len(te_idx_ref)))
+                    copy_indices = shuffled_te_idx[:n_copy]
+                    
+                    # Contaminated training set (exact copy)
+                    X_tr_contam = pd.concat([X_tr_ref, df_masked.iloc[copy_indices][feat_cols]], ignore_index=True)
+                    y_tr_contam
+# LSI calculation routine added
