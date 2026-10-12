@@ -280,5 +280,25 @@ def run_experiments():
                     pipe = get_pipeline(m_name, num_cols, cat_cols, seed)
                     pipe.fit(X_tr_rnd, y_tr_rnd)
                     y_pred = pipe.predict(X_te_rnd)
-           
-# ERI calculation routine added
+                    y_prob = pipe.predict_proba(X_te_rnd)[:, 1] if hasattr(pipe.named_steps['classifier'], 'predict_proba') else y_pred
+                    f1, prec, rec, acc, auc = compute_metrics(y_te_rnd, y_pred, y_prob)
+                    
+                    delta_f1 = f1 - ref_metrics[m_name]
+                    eri = (delta_f1 / (1.0 - ref_metrics[m_name])) * 100.0 if (1.0 - ref_metrics[m_name]) > 1e-6 else np.nan
+                    
+                    results_main.append({
+                        'dataset': d_name, 'seed': seed, 'missing_rate': m, 'condition': 'Ordinary Random Split',
+                        'overlap_rate': np.nan, 'model': m_name, 'f1': f1, 'precision': prec, 'recall': rec,
+                        'accuracy': acc, 'roc_auc': auc, 'ref_f1': ref_metrics[m_name], 'delta_f1': delta_f1, 'eri': eri
+                    })
+                    
+                # Supplementary Independent-Mask Mechanism at 50% Overlap
+                n_copy_50 = int(round(0.50 * len(te_idx_ref)))
+                copy_indices_50 = shuffled_te_idx[:n_copy_50]
+                # Take clean unmasked instances and mask them independently
+                clean_copies = df_base.iloc[copy_indices_50][feat_cols].copy()
+                indep_copies = apply_mcar_mask(clean_copies, feat_cols, m, seed=seed * 500 + int(m * 2000) + 777)
+                
+                X_tr_indep = pd.concat([X_tr_ref, indep_copies], ignore_index=True)
+                y_tr_indep = pd.concat([y_tr_ref, df_base.iloc[co
+# Ordinary split natural leakage evaluation added
