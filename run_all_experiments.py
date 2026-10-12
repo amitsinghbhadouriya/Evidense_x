@@ -250,5 +250,35 @@ def run_experiments():
                     
                     # Contaminated training set (exact copy)
                     X_tr_contam = pd.concat([X_tr_ref, df_masked.iloc[copy_indices][feat_cols]], ignore_index=True)
-                    y_tr_contam
-# LSI calculation routine added
+                    y_tr_contam = pd.concat([y_tr_ref, df_base.iloc[copy_indices][target_col]], ignore_index=True)
+                    
+                    for m_name in models:
+                        pipe = get_pipeline(m_name, num_cols, cat_cols, seed)
+                        pipe.fit(X_tr_contam, y_tr_contam)
+                        y_pred = pipe.predict(X_te_ref)
+                        y_prob = pipe.predict_proba(X_te_ref)[:, 1] if hasattr(pipe.named_steps['classifier'], 'predict_proba') else y_pred
+                        f1, prec, rec, acc, auc = compute_metrics(y_te_ref, y_pred, y_prob)
+                        
+                        delta_f1 = f1 - ref_metrics[m_name]
+                        eri = (delta_f1 / (1.0 - ref_metrics[m_name])) * 100.0 if (1.0 - ref_metrics[m_name]) > 1e-6 else np.nan
+                        
+                        results_main.append({
+                            'dataset': d_name, 'seed': seed, 'missing_rate': m, 'condition': f'{int(ov*100)}% Overlap',
+                            'overlap_rate': ov, 'model': m_name, 'f1': f1, 'precision': prec, 'recall': rec,
+                            'accuracy': acc, 'roc_auc': auc, 'ref_f1': ref_metrics[m_name], 'delta_f1': delta_f1, 'eri': eri
+                        })
+                        
+                        # If 50% overlap, record for supplementary comparison as Exact Copy
+                        if ov == 0.50:
+                            results_supp.append({
+                                'dataset': d_name, 'seed': seed, 'missing_rate': m, 'mechanism': 'Exact Copy',
+                                'model': m_name, 'f1': f1, 'delta_f1': delta_f1, 'ref_f1': ref_metrics[m_name]
+                            })
+                            
+                # Ordinary Random Split Condition
+                for m_name in models:
+                    pipe = get_pipeline(m_name, num_cols, cat_cols, seed)
+                    pipe.fit(X_tr_rnd, y_tr_rnd)
+                    y_pred = pipe.predict(X_te_rnd)
+           
+# ERI calculation routine added
