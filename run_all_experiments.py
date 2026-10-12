@@ -300,5 +300,32 @@ def run_experiments():
                 indep_copies = apply_mcar_mask(clean_copies, feat_cols, m, seed=seed * 500 + int(m * 2000) + 777)
                 
                 X_tr_indep = pd.concat([X_tr_ref, indep_copies], ignore_index=True)
-                y_tr_indep = pd.concat([y_tr_ref, df_base.iloc[co
-# Ordinary split natural leakage evaluation added
+                y_tr_indep = pd.concat([y_tr_ref, df_base.iloc[copy_indices_50][target_col]], ignore_index=True)
+                
+                for m_name in models:
+                    pipe = get_pipeline(m_name, num_cols, cat_cols, seed)
+                    pipe.fit(X_tr_indep, y_tr_indep)
+                    y_pred = pipe.predict(X_te_ref)
+                    f1 = f1_score(y_te_ref, y_pred, zero_division=0)
+                    delta_f1 = f1 - ref_metrics[m_name]
+                    
+                    results_supp.append({
+                        'dataset': d_name, 'seed': seed, 'missing_rate': m, 'mechanism': 'Independently Masked',
+                        'model': m_name, 'f1': f1, 'delta_f1': delta_f1, 'ref_f1': ref_metrics[m_name]
+                    })
+                    
+    elapsed = time.time() - start_time
+    print(f"\nAll experiments completed in {elapsed:.2f} seconds!")
+    
+    df_res_main = pd.DataFrame(results_main)
+    df_res_supp = pd.DataFrame(results_supp)
+    
+    os.makedirs('results', exist_ok=True)
+    df_res_main.to_csv(os.path.join('results', 'results_main.csv'), index=False)
+    df_res_supp.to_csv(os.path.join('results', 'results_supp.csv'), index=False)
+    print("Saved results to results/results_main.csv and results/results_supp.csv")
+    
+    return df_res_main, df_res_supp
+
+if __name__ == '__main__':
+    run_experiments()
