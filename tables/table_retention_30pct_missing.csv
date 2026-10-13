@@ -1,0 +1,10 @@
+dataset,model,mean,std
+Adult Census Income,Decision Tree,20.588212228140797,6.380859091528255
+Adult Census Income,Logistic Regression,143.3088999966985,666.1576840515647
+Adult Census Income,Random Forest,14.959928670338249,5.920036975827207
+Wine Quality—Red,Decision Tree,23.71241579473746,15.488272996798827
+Wine Quality—Red,Logistic Regression,128.8790946367816,689.5025414746499
+Wine Quality—Red,Random Forest,32.32964263519365,7.353889260319136
+Wine Quality—White,Decision Tree,19.49390832956005,13.341015415678395
+Wine Quality—White,Logistic Regression,127.09237070914193,179.75464206985322
+Wine Quality—White,Random Forest,30.063178418797445,5.069106222295356
