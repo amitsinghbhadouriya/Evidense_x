@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "evidense-x"
-version = "1.0.0"
+version = "1.1.0"
 authors = [
   { name="Amit Singh Bhadouriya", email="abhaybhadouriya88@gmail.com" },
 ]
@@ -36,4 +36,4 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-pythonpath = ["."]
+pythonpath = ["src", "."]

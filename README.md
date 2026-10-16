@@ -127,3 +127,23 @@ python analyze_and_plot.py
 
 ## License
 Distributed under the [MIT License](LICENSE).
+
+---
+
+## Modular Architecture (`evidense_x`)
+
+Evidense-X provides a production-grade modular Python package under `src/evidense_x/`:
+- **`evidense_x.data`**: Benchmark loaders with schema enforcement.
+- **`evidense_x.defects`**: Parameterized MCAR/MAR feature masking and coordinate hashing.
+- **`evidense_x.splitters`**: Certified duplicate-aware group splitting and leakage injectors.
+- **`evidense_x.models`**: Preprocessing column transformers and classifier pipelines.
+- **`evidense_x.metrics`**: Formal diagnostic metrics (LSI, ERI, Relative Inflation).
+- **`evidense_x.analysis`**: Econometric OLS interaction regression and Wilcoxon testing.
+- **`evidense_x.cli`**: Built-in CLI tool for auditing and profiling.
+
+### Command-Line Interface
+```bash
+python -m evidense_x.cli --version
+python scripts/audit_dataset_duplicates.py "wine quality/winequality-red.csv"
+python scripts/profile_data_defects.py "Adult/adult.data"
+```
