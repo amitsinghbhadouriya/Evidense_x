@@ -1,0 +1,11 @@
+benchmark:
+  name: adult_census_benchmark
+  dataset: Adult Census Income
+  subsample_size: 10000
+  models:
+    - Logistic Regression
+    - Decision Tree
+    - Random Forest
+  missing_rates: [0.0, 0.10, 0.20, 0.30]
+  overlap_rates: [0.0, 0.10, 0.25, 0.50]
+  seeds: 10
