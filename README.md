@@ -147,3 +147,5 @@ python -m evidense_x.cli --version
 python scripts/audit_dataset_duplicates.py "wine quality/winequality-red.csv"
 python scripts/profile_data_defects.py "Adult/adult.data"
 ```
+
+<!-- v1.2.0 Release Complete -->
