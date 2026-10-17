@@ -1,0 +1,10 @@
+benchmark:
+  name: wine_white_benchmark
+  dataset: Wine Quality—White
+  models:
+    - Logistic Regression
+    - Decision Tree
+    - Random Forest
+  missing_rates: [0.0, 0.10, 0.20, 0.30]
+  overlap_rates: [0.0, 0.10, 0.25, 0.50]
+  seeds: 10
