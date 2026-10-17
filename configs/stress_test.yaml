@@ -1,0 +1,7 @@
+benchmark:
+  name: stress_test_high_defect
+  missing_rates: [0.40, 0.50]
+  overlap_rates: [0.75, 0.90]
+  models:
+    - Decision Tree
+    - Random Forest
