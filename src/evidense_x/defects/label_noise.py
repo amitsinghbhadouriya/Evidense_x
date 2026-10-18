@@ -1,10 +1,28 @@
+"""Class-conditional and symmetric classification label noise simulator."""
 import numpy as np
 import pandas as pd
+from typing import Optional
+from ..core.interfaces import BaseDefectSimulator
 
-def inject_duplicate_label_noise(df: pd.DataFrame, target_col: str, noise_rate: float = 0.05, seed: int = 42) -> pd.DataFrame:
-    """Flips binary labels with given probability to simulate imperfect duplicate labeling."""
-    rng = np.random.RandomState(seed)
-    out = df.copy()
-    flip_mask = rng.rand(len(df)) < noise_rate
-    out.loc[flip_mask, target_col] = 1 - out.loc[flip_mask, target_col]
-    return out
+class ClassificationLabelNoiseInjector(BaseDefectSimulator):
+    """Injects symmetric label flipping noise into classification target labels."""
+    
+    def inject(self, df: pd.DataFrame, rate: float, target_col: str = "target", **kwargs) -> pd.DataFrame:
+        out = df.copy()
+        if target_col not in out.columns:
+            target_col = out.columns[-1]
+            
+        classes = out[target_col].dropna().unique()
+        if len(classes) < 2:
+            return out
+            
+        mask = self.rng.uniform(0, 1, size=len(out)) < rate
+        n_flipped = mask.sum()
+        if n_flipped > 0:
+            current = out.loc[mask, target_col].values
+            new_vals = []
+            for c in current:
+                other_classes = [cl for cl in classes if cl != c]
+                new_vals.append(self.rng.choice(other_classes))
+            out.loc[mask, target_col] = new_vals
+        return out
