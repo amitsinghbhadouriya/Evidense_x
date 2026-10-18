@@ -1,0 +1,9 @@
+{
+  "benchmark_name": "healthcare_icu_sepsis",
+  "dataset": "synthetic_icu_telemetry",
+  "missing_mechanisms": ["MCAR", "MAR_logistic", "MNAR_threshold"],
+  "missing_rates": [0.0, 0.05, 0.15, 0.30],
+  "overlap_rates": [0.0, 0.02, 0.10, 0.25],
+  "models": ["rf", "gradient_boosting", "logistic_regression", "mlp"],
+  "random_seeds": [42, 101, 202, 303, 404]
+}
