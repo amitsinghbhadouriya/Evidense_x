@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [v1.4.0] - 2026-10-19
+
+### Added
+- **Resampling & Partitioning:** Implemented `GroupStratifiedKFold`, `TemporalBlockSplitter`, `PurgedWalkForwardCV`, and `ClusterBasedSpatialSplitter`.
+- **Imputation Benchmarks:** Introduced `IterativeChainedEquationsImputer` (MICE), `KNNNeighborImputer`, and `MissForestRandomForestImputer`.
+- **High-Dimensional & Vector Audit:** Implemented `MinHashLSHNearDuplicateAuditor`, `EmbeddingCosineLeakageScanner`, `TargetLeakageCorrelationAuditor`, and `ZeroVarianceFeatureAuditor`.
+- **Fairness & Gain Metrics:** Added `DemographicParityDifference`, `EqualizedOddsDisparity`, `PredictionEntropyVolatility`, and Area Under Precision-Recall Gain (`AUPRG`).
+- **Interactive Visualization:** Added standalone HTML/SVG report generator, Sankey defect migration flow, and calibration drift strip plots.
+- **Operational Runbook:** Added production deployment checklist and automated CI/CD gate runbook (`DEPLOYMENT_RUNBOOK.md`).
+
 ## [v1.3.0] - 2026-10-18
 
 ### Added
