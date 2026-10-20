@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [v1.5.0] - 2026-10-20
+
+### Added
+- **Synthetic Data Generators:** Added `SyntheticDefectDatasetGenerator`, `MultiModalTabularGenerator`, `LongitudinalPatientTrajectoryGenerator`, and `FinancialTransactionStreamGenerator`.
+- **Robust Feature Transforms:** Implemented `OutlierWinsorizer`, `RobustQuantileTransformer`, `MissingnessIndicatorAugmenter`, and `RobustTargetEncoder`.
+- **Interpretability & Attributions:** Added `PermutationFeatureExplainer`, `ApproximateKernelShapExplainer`, `AttributionLeakageAuditor`, and `TreeFeatureStabilityIndex`.
+- **Hyperparameter Optimization:** Added `RandomizedCVOptimizer`, `SuccessiveHalvingScheduler`, `MultiObjectiveParetoFilter`, and `EarlyStoppingTracker`.
+- **Ensemble Architectures:** Implemented `SoftVotingEnsemble`, `SuperLearnerStackingClassifier`, and `TemperatureScalingCalibrator`.
+- **CLI Enhancements:** Added `evidense-x benchmark`, `report`, and `clean` subcommands.
+
 ## [v1.4.0] - 2026-10-19
 
 ### Added
