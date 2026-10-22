@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [v1.6.0] - 2026-10-22
+
+### Added
+- **AI Governance & Regulatory Compliance:** Implemented `EUAIActRiskClassifier` (Article 10 data compliance), `ModelCardGenerator` (transparency cards), `CryptographicProvenanceTracker` (SHA-256 lineage tracking), and `GovernanceExportSuite` (JSON-LD, HTML badges, Markdown).
+- **Unsupervised Anomaly & Distribution Diagnostics:** Added `IsolationForestDriftDetector`, `LocalOutlierFactorAuditor`, `RobustMahalanobisAuditor` (covariance shrinkage), and `EnergyDistanceDriftDetector` (non-parametric two-sample test).
+- **Automated Defect Remediation & Self-Healing:** Implemented `DeduplicationAutoResolver`, `IntelligentImputationRouter` (dynamic KNN/median switching), `AdaptiveOutlierClipperRemediator` (IQR clipping), `ConfidentLabelNoiseRemediator` (out-of-fold disagreement), and `AutoCleanPipeline`.
+- **Online Streaming Defect Surveillance:** Added `SlidingWindowLeakageMonitor`, `AdaptiveWindowDriftDetector` (Hoeffding bound thresholds), and `ExponentialMovingAverageMissingnessAuditor`.
+- **Extended CLI Commands:** Added `evidense-x govern`, `stream-audit`, and `remediate` subcommands.
+- **Documentation:** Added comprehensive operational guide in `docs/GOVERNANCE_AND_REMEDIATION.md`.
+
 ## [v1.5.0] - 2026-10-20
 
 ### Added
